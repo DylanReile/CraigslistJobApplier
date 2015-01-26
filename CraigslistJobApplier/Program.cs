@@ -11,8 +11,8 @@ namespace CraigslistJobApplier
     {
         static void Main(string[] args)
         {
-            var craigslistApplier = new CraigslistJobProducer();
-            var jobUrls = craigslistApplier.ExtractJobUrls("http://fayar.craigslist.org");
+            var craigslistApplier = new CraigslistJobProducer("http://memphis.craigslist.org");
+            craigslistApplier.ProduceWork();
         }
     }
 }
