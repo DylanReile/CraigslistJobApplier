@@ -3,46 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 
 namespace CraigslistJobApplier
 {
     class CraigslistJobProducer
     {
-        public List<String> ExtractJobUrls()
+        public List<String> ExtractJobUrls(String craigslistUrl)
         {
-            var url = "http://seattle.craigslist.org/search/sof?";
-            var html = GetHtml(url);
-
-            var regex = new Regex(@"\/...\/sof\/\d+?.html"); // \/...\/sof\/\d+?.html
-
-            var tailUrls = regex.Matches(html)
-                .Cast<Match>()
-                .Select(x => x.Value)
-                .ToList();
-
-            //add root url
-            var rootUrl = url.Replace("/search/sof", String.Empty);
+            var page = new HtmlWeb();
+            var doc = page.Load(craigslistUrl + "/search/sof");
 
             var jobUrls = new List<String>();
 
-            foreach (var tailUrl in tailUrls)
-                jobUrls.Add(rootUrl + tailUrl);
-
-            return jobUrls.Distinct().ToList();
-        }
-
-        private String GetHtml(String url)
-        {
-            using(var client = new WebClient())
+            foreach (var link in doc.DocumentNode.SelectNodes("//a[@class='hdrlnk']"))
             {
-                Stream data = client.OpenRead(url);
-                StreamReader reader = new StreamReader(data);
-                return reader.ReadToEnd();
+                var jobPath = link.GetAttributeValue("href", null);
+
+                // Craigslist sometimes returns results for nearby areas.
+                // these links will be absolute URLs, so they can be filtered out by looking for "craigslist"
+                if(jobPath != null && !jobPath.Contains("craigslist"))
+                    jobUrls.Add(craigslistUrl + jobPath);
             }
+
+            return jobUrls;
         }
     }
 }

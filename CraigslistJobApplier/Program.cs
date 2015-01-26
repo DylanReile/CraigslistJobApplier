@@ -12,10 +12,7 @@ namespace CraigslistJobApplier
         static void Main(string[] args)
         {
             var craigslistApplier = new CraigslistJobProducer();
-            var jobUrls = craigslistApplier.ExtractJobUrls();
-
-            foreach(var jobUrl in jobUrls)
-                System.Diagnostics.Process.Start(jobUrl);
+            var jobUrls = craigslistApplier.ExtractJobUrls("http://fayar.craigslist.org");
         }
     }
 }
