@@ -44,7 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CraigslistJobApplier.cs" />
+    <Compile Include="CraigslistJobConsumer.cs" />
+    <Compile Include="CraigslistJobProducer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,8 +12,12 @@ namespace CraigslistJobApplier
     {
         static void Main(string[] args)
         {
-            var craigslistApplier = new CraigslistJobProducer("http://memphis.craigslist.org");
-            craigslistApplier.ProduceWork();
+            //var craigslistJobProducer = new CraigslistJobProducer("http://memphis.craigslist.org");
+            //craigslistJobProducer.ProduceWork();
+
+            var craigslistJobConsumer = new CraigslistJobConsumer();
+            var resume = new FileInfo(@"path to resume here");
+            craigslistJobConsumer.SendGmail("senderGmailAccount@gmail.com", "senderGmailPassword", "recipient@gmail.com", "testing", "body of message", resume);
         }
     }
 }
