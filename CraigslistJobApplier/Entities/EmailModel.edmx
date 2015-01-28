@@ -20,6 +20,7 @@
           </Key>
           <Property Name="Url" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityContainer Name="EmailsModelStoreContainer">
           <EntitySet Name="Emails" EntityType="Self.Emails" Schema="dbo" store:Type="Tables" />
@@ -48,6 +49,7 @@
           </Key>
           <Property Name="Url" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -68,6 +70,7 @@
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="EmailsModel.Location">
               <MappingFragment StoreEntitySet="Locations">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Url" ColumnName="Url" />
               </MappingFragment>

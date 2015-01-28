@@ -14,7 +14,7 @@ namespace CraigslistProducer
         {
             using (var db = new devEntities())
             {
-                foreach (var location in db.Locations)
+                foreach (var location in db.Locations.Where(x => x.IsActive == true))
                 {
                     var craigslistJobProducer = new CraigslistJobProducer(location.Url, location.Name);
                     craigslistJobProducer.QueueEmails();
