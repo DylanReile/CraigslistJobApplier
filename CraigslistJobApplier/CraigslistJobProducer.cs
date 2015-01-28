@@ -8,16 +8,19 @@ using System.IO;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using System.Web;
+using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
     class CraigslistJobProducer
     {
         private readonly String _craigslistUrl;
+        private readonly String _craigslistLocation;
 
-        public CraigslistJobProducer(String CraigslistUrl)
+        public CraigslistJobProducer(String CraigslistUrl, String CraigslistLocation)
         {
             _craigslistUrl = CraigslistUrl;
+            _craigslistLocation = CraigslistLocation;
         }
 
         public void ProduceWork()
@@ -28,7 +31,26 @@ namespace CraigslistJobApplier
 
             var emailsAndSubjects = ExtractEmailsAndSubjects(replyUrls);
 
-            // add data to database
+            // add emails to database
+            using (var context = new devEntities())
+            {
+                foreach(var emailAndSubject in emailsAndSubjects)
+                {
+                    if (context.Emails.Where(x => x.Email1 == emailAndSubject.Key).Count() == 0)
+                    {
+                        context.Emails.Add(new Email()
+                        {
+                            Email1 = emailAndSubject.Key,
+                            MessageSubject = emailAndSubject.Value,
+                            Location = _craigslistLocation,
+                            HasBeenSent = false
+                        });
+
+                    }
+                }
+
+                context.SaveChanges();
+            }
         }
 
         private Dictionary<String, String> ExtractEmailsAndSubjects(List<String> replyUrls)
@@ -41,32 +63,21 @@ namespace CraigslistJobApplier
             {
                 var doc = page.Load(replyUrl);
                 var link = doc.DocumentNode.SelectSingleNode("//a[@class='mailapp']");
+                var title = doc.DocumentNode.SelectSingleNode("//title");
         
                 if (link != null)
                 {
-                    var mailto = link.GetAttributeValue("href", null);
+                    var email = link.InnerHtml;
 
-                    var emailAndSubject = ParseEmailAndSubject(mailto);
+                    var subject = title.InnerHtml;
 
-                    var email = emailAndSubject.Item1;
-                    var subject = emailAndSubject.Item2;
+                    subject = Regex.Match(subject, @"(?<= - ).+").ToString();
 
                     emailsAndSubjects.Add(email, subject);
                 }
             }
 
             return emailsAndSubjects;
-        }
-
-        private Tuple<String, String> ParseEmailAndSubject(String mailto)
-        {
-            var email = Regex.Match(mailto, @"(?<=mailto:).+?(?=\?)").ToString();
-            var subject = Regex.Match(mailto, @"(?<=subject\=).+?(?=&)").ToString();
-
-            email = Uri.UnescapeDataString(email);
-            subject = Uri.UnescapeDataString(subject);
-
-            return new Tuple<String, String>(email, subject);
         }
 
         private List<String> ExtractReplyUrls(List<String> jobUrls)

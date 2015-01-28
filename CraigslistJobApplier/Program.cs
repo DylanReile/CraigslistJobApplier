@@ -12,12 +12,12 @@ namespace CraigslistJobApplier
     {
         static void Main(string[] args)
         {
-            //var craigslistJobProducer = new CraigslistJobProducer("http://memphis.craigslist.org");
+            //var craigslistJobProducer = new CraigslistJobProducer("http://newyork.craigslist.org", "New York");
             //craigslistJobProducer.ProduceWork();
 
-            var message = File.ReadAllText(@"C:\Users\Dylan\Downloads\applicationBlurb.txt");
-            var resume = new FileInfo(@"C:\Users\Dylan\Downloads\DylanReileResume.doc");
-            var craigslistJobConsumer = new CraigslistJobConsumer("dylanbajen@gmail.com", "7783248!", message, resume);
+            var message = File.ReadAllText(@"****");
+            var resume = new FileInfo(@"***");
+            var craigslistJobConsumer = new CraigslistJobConsumer("****", "****", message, resume);
             craigslistJobConsumer.SendQueuedEmail(); 
         }
     }
