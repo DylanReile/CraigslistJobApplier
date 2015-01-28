@@ -15,9 +15,10 @@ namespace CraigslistJobApplier
             //var craigslistJobProducer = new CraigslistJobProducer("http://memphis.craigslist.org");
             //craigslistJobProducer.ProduceWork();
 
-            var craigslistJobConsumer = new CraigslistJobConsumer();
-            var resume = new FileInfo(@"path to resume here");
-            craigslistJobConsumer.SendGmail("senderGmailAccount@gmail.com", "senderGmailPassword", "recipient@gmail.com", "testing", "body of message", resume);
+            var message = File.ReadAllText(@"pathToMessageInTextFile");
+            var resume = new FileInfo(@"pathToResume");
+            var craigslistJobConsumer = new CraigslistJobConsumer("*******@gmail.com", "*****", message, resume);
+            craigslistJobConsumer.SendQueuedEmail(); 
         }
     }
 }

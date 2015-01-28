@@ -32,11 +32,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,13 +56,53 @@
   <ItemGroup>
     <Compile Include="CraigslistJobConsumer.cs" />
     <Compile Include="CraigslistJobProducer.cs" />
+    <Compile Include="Entities\Email.cs">
+      <DependentUpon>EmailModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\EmailModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmailModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\EmailModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmailModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\EmailModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmailModel.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EntityDeploy Include="Entities\EmailModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EmailModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Entities\EmailModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EmailModel.edmx</DependentUpon>
+      <LastGenOutput>EmailModel.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Entities\EmailModel.edmx.diagram">
+      <DependentUpon>EmailModel.edmx</DependentUpon>
+    </None>
+    <None Include="Entities\EmailModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EmailModel.edmx</DependentUpon>
+      <LastGenOutput>EmailModel.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
