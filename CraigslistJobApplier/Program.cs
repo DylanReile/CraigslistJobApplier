@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CraigslistJobApplier.Entities;
+using System.Threading;
 
 namespace CraigslistJobApplier
 {
@@ -12,13 +14,7 @@ namespace CraigslistJobApplier
     {
         static void Main(string[] args)
         {
-            //var craigslistJobProducer = new CraigslistJobProducer("http://newyork.craigslist.org", "New York");
-            //craigslistJobProducer.ProduceWork();
-
-            var message = File.ReadAllText(@"****");
-            var resume = new FileInfo(@"***");
-            var craigslistJobConsumer = new CraigslistJobConsumer("****", "****", message, resume);
-            craigslistJobConsumer.SendQueuedEmail(); 
+            //intentionally blank
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Net.Mail;
 using CraigslistJobApplier.Entities;
 using System.Linq;
 
-namespace CraigslistJobApplier
+namespace CraigslistConsumer
 {
     public class CraigslistJobConsumer
     {
@@ -35,6 +35,8 @@ namespace CraigslistJobApplier
                     SendGmail(queuedEmail.Email1, queuedEmail.MessageSubject, queuedEmail.Location);
 
                     queuedEmail.HasBeenSent = true;
+
+                    Console.WriteLine(String.Format("Applied to {0} in {1}", queuedEmail.MessageSubject, queuedEmail.Location));
 
                     context.SaveChanges();
                 }

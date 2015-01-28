@@ -5,6 +5,10 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CraigslistJobApplier", "CraigslistJobApplier\CraigslistJobApplier.csproj", "{FAA78BF6-9529-4926-ABCD-E76474123A7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CraigslistJobProducer", "CraigslistJobProducer\CraigslistJobProducer.csproj", "{D8B41BAC-4120-47DA-95CA-AE6D4987EC77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CraigslistJobConsumer", "CraigslistJobConsumer\CraigslistJobConsumer.csproj", "{CBE3F143-E5CD-47CA-B4CE-0FC70CCC7219}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{FAA78BF6-9529-4926-ABCD-E76474123A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAA78BF6-9529-4926-ABCD-E76474123A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAA78BF6-9529-4926-ABCD-E76474123A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8B41BAC-4120-47DA-95CA-AE6D4987EC77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8B41BAC-4120-47DA-95CA-AE6D4987EC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8B41BAC-4120-47DA-95CA-AE6D4987EC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8B41BAC-4120-47DA-95CA-AE6D4987EC77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE3F143-E5CD-47CA-B4CE-0FC70CCC7219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE3F143-E5CD-47CA-B4CE-0FC70CCC7219}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE3F143-E5CD-47CA-B4CE-0FC70CCC7219}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE3F143-E5CD-47CA-B4CE-0FC70CCC7219}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

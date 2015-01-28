@@ -10,7 +10,7 @@ using HtmlAgilityPack;
 using System.Web;
 using CraigslistJobApplier.Entities;
 
-namespace CraigslistJobApplier
+namespace CraigslistProducer
 {
     class CraigslistJobProducer
     {
@@ -23,7 +23,7 @@ namespace CraigslistJobApplier
             _craigslistLocation = CraigslistLocation;
         }
 
-        public void ProduceWork()
+        public void QueueEmails()
         {
             var jobUrls = ExtractJobUrls();
 
@@ -34,6 +34,8 @@ namespace CraigslistJobApplier
             // add emails to database
             using (var context = new devEntities())
             {
+                int emailsQueued = 0;
+
                 foreach(var emailAndSubject in emailsAndSubjects)
                 {
                     if (context.Emails.Where(x => x.Email1 == emailAndSubject.Key).Count() == 0)
@@ -46,10 +48,13 @@ namespace CraigslistJobApplier
                             HasBeenSent = false
                         });
 
+                        emailsQueued++;
                     }
                 }
 
                 context.SaveChanges();
+
+                Console.WriteLine(String.Format("Queued {0} emails for {1}", emailsQueued, _craigslistLocation));
             }
         }
 

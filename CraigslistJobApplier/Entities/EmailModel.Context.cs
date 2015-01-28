@@ -26,5 +26,6 @@ namespace CraigslistJobApplier.Entities
         }
     
         public virtual DbSet<Email> Emails { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
     }
 }
