@@ -12,12 +12,20 @@ namespace CraigslistConsumer
     {
         static void Main(string[] args)
         {
+            var message = File.ReadAllText(@"C:\Users\Dylan\Downloads\applicationBlurb.txt");
+            var resume = new FileInfo(@"C:\Users\Dylan\Downloads\DylanReileResume.doc");
+            var craigslistJobConsumer = new CraigslistJobConsumer("****@gmail.com", "******", message, resume);
+
             while (true)
             {
-                var message = File.ReadAllText(@"*****");
-                var resume = new FileInfo(@"******");
-                var craigslistJobConsumer = new CraigslistJobConsumer("****@gmail.com", "****", message, resume);
-                craigslistJobConsumer.SendQueuedEmail();
+                try
+                {
+                    craigslistJobConsumer.SendQueuedEmail();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
 
                 Thread.Sleep(60000); //wait 1 minute between emails
             }
