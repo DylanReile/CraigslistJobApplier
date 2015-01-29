@@ -38,29 +38,28 @@ namespace CraigslistProducer
 
                 foreach(var emailAndSubject in emailsAndSubjects)
                 {
-                    if (context.Emails.Where(x => x.Email1 == emailAndSubject.Key).Count() == 0)
+                    //if the email isn't already queued
+                    if (context.Emails.Where(x => x.Email1 == emailAndSubject.Item1).Count() == 0)
                     {
                         context.Emails.Add(new Email()
                         {
-                            Email1 = emailAndSubject.Key,
-                            MessageSubject = emailAndSubject.Value,
+                            Email1 = emailAndSubject.Item1,
+                            MessageSubject = emailAndSubject.Item2,
                             Location = _craigslistLocation,
                             HasBeenSent = false
                         });
 
+                        context.SaveChanges();
                         emailsQueued++;
                     }
                 }
-
-                context.SaveChanges();
-
                 Console.WriteLine(String.Format("Queued {0} emails for {1}", emailsQueued, _craigslistLocation));
             }
         }
 
-        private Dictionary<String, String> ExtractEmailsAndSubjects(List<String> replyUrls)
+        private List<Tuple<String, String>> ExtractEmailsAndSubjects(List<String> replyUrls)
         {
-            var emailsAndSubjects = new Dictionary<String, String>();
+            var emailsAndSubjects = new List<Tuple<String, String>>();
 
             var page = new HtmlWeb();
 
@@ -78,7 +77,7 @@ namespace CraigslistProducer
 
                     subject = Regex.Match(subject, @"(?<= - ).+").ToString();
 
-                    emailsAndSubjects.Add(email, subject);
+                    emailsAndSubjects.Add(new Tuple<String, String>(email, subject));
                 }
             }
 
