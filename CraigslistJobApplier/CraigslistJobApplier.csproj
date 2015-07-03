@@ -54,49 +54,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Email.cs">
-      <DependentUpon>EmailModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Entities\EmailModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EmailModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Entities\EmailModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EmailModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Entities\EmailModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EmailModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Entities\Location.cs">
-      <DependentUpon>EmailModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="CraigslistJobConsumer.cs" />
+    <Compile Include="CraigslistJobProducer.cs" />
+    <Compile Include="Entities\CraigslistContext.cs" />
+    <Compile Include="Entities\Email.cs" />
+    <Compile Include="Entities\Location.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EntityDeploy Include="Entities\EmailModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EmailModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Entities\EmailModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EmailModel.edmx</DependentUpon>
-      <LastGenOutput>EmailModel.Context.cs</LastGenOutput>
-    </None>
-    <None Include="Entities\EmailModel.edmx.diagram">
-      <DependentUpon>EmailModel.edmx</DependentUpon>
-    </None>
-    <None Include="Entities\EmailModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EmailModel.edmx</DependentUpon>
-      <LastGenOutput>EmailModel.cs</LastGenOutput>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@ using System.Net.Mail;
 using CraigslistJobApplier.Entities;
 using System.Linq;
 
-namespace CraigslistConsumer
+namespace CraigslistJobApplier
 {
     public class CraigslistJobConsumer
     {
@@ -24,7 +24,7 @@ namespace CraigslistConsumer
 
         public void SendQueuedEmail()
         {
-            using (var context = new devEntities())
+            using (var context = new CraigslistContext())
             {
                 var unsentEmails = context.Emails.Where(x => x.HasBeenSent == false);
 

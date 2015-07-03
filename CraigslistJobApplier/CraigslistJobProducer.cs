@@ -10,7 +10,7 @@ using HtmlAgilityPack;
 using System.Web;
 using CraigslistJobApplier.Entities;
 
-namespace CraigslistProducer
+namespace CraigslistJobApplier
 {
     class CraigslistJobProducer
     {
@@ -32,7 +32,7 @@ namespace CraigslistProducer
             var emailsAndSubjects = ExtractEmailsAndSubjects(replyUrls);
 
             // add emails to database
-            using (var context = new devEntities())
+            using (var context = new CraigslistContext())
             {
                 int emailsQueued = 0;
 
