@@ -2,50 +2,42 @@
 using System.IO;
 using System.Net;
 using System.Net.Mail;
-using CraigslistJobApplier.Entities;
 using System.Linq;
+using System.Threading;
+using System.Collections.Generic;
+using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
     public class CraigslistJobConsumer
     {
-        private readonly FileInfo _resume;
-        private readonly String _fromGmailAddress;
-        private readonly String _fromGmailPassword;
-        private readonly String _message;
-
-        public CraigslistJobConsumer(String fromGmailAddress, String fromGmailPassword, String message, FileInfo resume)
+        public void SendQueuedEmails(String fromGmailAddress, String fromGmailPassword, String message, FileInfo resume)
         {
-            _resume = resume;
-            _fromGmailAddress = fromGmailAddress;
-            _fromGmailPassword = fromGmailPassword;
-            _message = message;
-        }
-
-        public void SendQueuedEmail()
-        {
-            using (var context = new CraigslistContext())
+            List<Email> unsentEmails;
+            using(var context = new CraigslistContext())
             {
-                var unsentEmails = context.Emails.Where(x => x.HasBeenSent == false);
+                unsentEmails = context.Emails.Where(x => x.HasBeenSent == false).ToList();
+            }
 
-                if(unsentEmails.Count() > 0)
+            foreach (var email in unsentEmails)
+            {
+                try
                 {
-                    var queuedEmail = unsentEmails.First();
-
-                    SendGmail(queuedEmail.Email1, queuedEmail.MessageSubject, queuedEmail.Location);
-
-                    queuedEmail.HasBeenSent = true;
-
-                    Console.WriteLine(String.Format("Applied to {0} in {1}", queuedEmail.MessageSubject, queuedEmail.Location));
-
-                    context.SaveChanges();
+                    SendQueuedEmail(fromGmailAddress, fromGmailPassword, message, resume, email);
+                    email.HasBeenSent = true;
+                    UpdateDetachedEmail(email);
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                //Thread.Sleep(60000); //wait 1 minute between emails
             }
         }
 
-        private void SendGmail(String toAddress, String subject, String location)
+        private void SendQueuedEmail(String fromGmailAddress, String fromGmailPassword, String message, FileInfo resume, Email email)
         {
-            var relocationMessage = _message.Replace("{location}", location);
+            message = message.Replace("{location}", email.Location);
 
             var smtp = new SmtpClient
             {
@@ -54,13 +46,25 @@ namespace CraigslistJobApplier
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(_fromGmailAddress, _fromGmailPassword)
+                Credentials = new NetworkCredential(fromGmailAddress, fromGmailPassword)
             };
 
-            using (var gmail = new MailMessage(_fromGmailAddress, toAddress, subject, relocationMessage))
+            using (var gmail = new MailMessage(fromGmailAddress, email.Address, email.Subject, message))
             {
-                gmail.Attachments.Add(new System.Net.Mail.Attachment(_resume.FullName));
+                gmail.Attachments.Add(new System.Net.Mail.Attachment(resume.FullName));
                 smtp.Send(gmail);
+            }
+
+            Console.WriteLine("Applied to {0} in {1}", email.Subject, email.Location);
+        }
+
+        private void UpdateDetachedEmail(Email detachedEmail)
+        {
+            using (var context = new CraigslistContext())
+            {
+                //implicity attach the entity and update all its fields
+                context.SetModified(detachedEmail);
+                context.SaveChanges();
             }
         }
     }

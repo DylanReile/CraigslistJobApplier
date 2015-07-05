@@ -11,9 +11,15 @@ namespace CraigslistJobApplier.Entities
     {
         public CraigslistContext() //: base("name=CraigslistContext")
         {
+            //Database.SetInitializer<CraigslistContext>(new DropCreateDatabaseAlways<CraigslistContext>());
         }
 
         public virtual DbSet<Email> Emails { get; set; }
         public virtual DbSet<Location> Locations { get; set; }
+
+        public virtual void SetModified(Object entity)
+        {
+            Entry(entity).State = EntityState.Modified;
+        }
     }
 }

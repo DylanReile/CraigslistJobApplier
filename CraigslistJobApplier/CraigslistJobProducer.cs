@@ -14,21 +14,25 @@ namespace CraigslistJobApplier
 {
     class CraigslistJobProducer
     {
-        private readonly String _craigslistUrl;
-        private readonly String _craigslistLocation;
-
-        public CraigslistJobProducer(String CraigslistUrl, String CraigslistLocation)
-        {
-            _craigslistUrl = CraigslistUrl;
-            _craigslistLocation = CraigslistLocation;
-        }
-
         public void QueueEmails()
         {
-            var jobUrls = ExtractJobUrls();
+            List<Location> activeLocations;
+            using (var context = new CraigslistContext())
+            {
+                activeLocations = context.Locations.Where(x => x.IsActive == true).ToList();
+            }
+            
+            foreach (var location in activeLocations)
+            {
+                QueueEmailsForLocation(location);
+                //Thread.Sleep(60000 * 30); //wait thirty minutes between locations
+            }
+        }
 
-            var replyUrls = ExtractReplyUrls(jobUrls);
-
+        private void QueueEmailsForLocation(Location location)
+        {
+            var jobUrls = ExtractJobUrls(location.Url);
+            var replyUrls = ExtractReplyUrls(jobUrls, location.Url);
             var emailsAndSubjects = ExtractEmailsAndSubjects(replyUrls);
 
             // add emails to database
@@ -38,14 +42,14 @@ namespace CraigslistJobApplier
 
                 foreach(var emailAndSubject in emailsAndSubjects)
                 {
-                    //if the email isn't already queued
-                    if (context.Emails.Where(x => x.Email1 == emailAndSubject.Item1).Count() == 0)
+                    //if the email has not already been queued
+                    if (!context.Emails.Where(x => x.Address == emailAndSubject.Item1).Any())
                     {
                         context.Emails.Add(new Email()
                         {
-                            Email1 = emailAndSubject.Item1,
-                            MessageSubject = emailAndSubject.Item2,
-                            Location = _craigslistLocation,
+                            Address = emailAndSubject.Item1,
+                            Subject = emailAndSubject.Item2,
+                            Location = location.Name,
                             HasBeenSent = false
                         });
 
@@ -53,7 +57,7 @@ namespace CraigslistJobApplier
                         emailsQueued++;
                     }
                 }
-                Console.WriteLine(String.Format("Queued {0} emails for {1}", emailsQueued, _craigslistLocation));
+                Console.WriteLine("Queued {0} emails for {1}", emailsQueued, location.Name);
             }
         }
 
@@ -61,22 +65,19 @@ namespace CraigslistJobApplier
         {
             var emailsAndSubjects = new List<Tuple<String, String>>();
 
-            var page = new HtmlWeb();
+            var webClient = new HtmlWeb();
 
             foreach(var replyUrl in replyUrls)
             {
-                var doc = page.Load(replyUrl);
+                var doc = webClient.Load(replyUrl);
                 var link = doc.DocumentNode.SelectSingleNode("//a[@class='mailapp']");
                 var title = doc.DocumentNode.SelectSingleNode("//title");
         
                 if (link != null)
                 {
                     var email = link.InnerHtml;
-
                     var subject = title.InnerHtml;
-
                     subject = Regex.Match(subject, @"(?<= - ).+").ToString();
-
                     emailsAndSubjects.Add(new Tuple<String, String>(email, subject));
                 }
             }
@@ -84,36 +85,34 @@ namespace CraigslistJobApplier
             return emailsAndSubjects;
         }
 
-        private List<String> ExtractReplyUrls(List<String> jobUrls)
+        private List<String> ExtractReplyUrls(List<String> jobUrls, String craigslistUrl)
         {
             var replyUrls = new List<String>();
 
-            var page = new HtmlWeb();
+            var webClient = new HtmlWeb();
 
             foreach(var jobUrl in jobUrls)
             {
-                var doc = page.Load(jobUrl);
-
+                var doc = webClient.Load(jobUrl);
                 var link = doc.DocumentNode.SelectSingleNode("//a[@id='replylink']");
 
                 // postings may not have email as a reply option. ignore these
                 if (link != null)
                 {
                     var replyPath = link.GetAttributeValue("href", null);
-
-                    replyUrls.Add(_craigslistUrl + replyPath);
+                    replyUrls.Add(craigslistUrl + replyPath);
                 }
             }
 
             return replyUrls;
         }
 
-        private List<String> ExtractJobUrls()
+        private List<String> ExtractJobUrls(String craigslistUrl)
         {
-            var page = new HtmlWeb();
-            var doc = page.Load(_craigslistUrl + "/search/sof");
-
             var jobUrls = new List<String>();
+
+            var webClient = new HtmlWeb();
+            var doc = webClient.Load(craigslistUrl + "/search/sof");
 
             foreach (var link in doc.DocumentNode.SelectNodes("//a[@class='hdrlnk']"))
             {
@@ -122,7 +121,7 @@ namespace CraigslistJobApplier
                 // Craigslist sometimes returns results for nearby areas.
                 // these links will be absolute URLs, so they can be filtered out by looking for "craigslist"
                 if(!jobPath.Contains("craigslist"))
-                    jobUrls.Add(_craigslistUrl + jobPath);
+                    jobUrls.Add(craigslistUrl + jobPath);
             }
 
             return jobUrls;
