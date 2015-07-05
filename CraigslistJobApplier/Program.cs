@@ -13,53 +13,38 @@ namespace CraigslistJobApplier
     {
         static void Main(String[] args)
         {
+            //AddLocation();
             //ProducerEntrypoint();
-            ConsumerEntryPoint();
-            //using(var db = new CraigslistContext())
-            //{
-            //    db.Locations.Add(new Location() {
-            //        Url = "fayar.craigslist.org",
-            //        Name = "Fayetteville",
-            //        IsActive = true
-            //    });
-
-            //    db.SaveChanges();
-            //}
+            ConsumerEntrypoint();
         }
 
         static void ProducerEntrypoint()
         {
-            using (var db = new CraigslistContext())
-            {
-                foreach (var location in db.Locations.Where(x => x.IsActive == true))
-                {
-                    var craigslistJobProducer = new CraigslistJobProducer(location.Url, location.Name);
-                    craigslistJobProducer.QueueEmails();
-
-                    Thread.Sleep(60000 * 30); //wait thirty minutes between locations
-                }
-            }
+            var craigslistJobProducer = new CraigslistJobProducer();
+            craigslistJobProducer.QueueEmails();
         }
 
-        static void ConsumerEntryPoint()
+        static void ConsumerEntrypoint()
         {
-            //TODO: use arguments for message file location, gmail credentials, and resume location
+            //TODO: use arguments for message file location, resume file location, and gmail credentials
             var message = File.ReadAllText(@"C:\Users\Dylan\Downloads\applicationBlurb.txt");
             var resume = new FileInfo(@"C:\Users\Dylan\Downloads\DylanBajenResume.doc");
-            var craigslistJobConsumer = new CraigslistJobConsumer("dylanbajen@gmail.com", "7783248!", message, resume);
+            var craigslistJobConsumer = new CraigslistJobConsumer();
+            craigslistJobConsumer.SendQueuedEmails("dylanbajen@gmail.com", "*******", message, resume);
+        }
 
-            while (true)
+        static void AddLocation()
+        {
+            using (var db = new CraigslistContext())
             {
-                try
+                db.Locations.Add(new Location()
                 {
-                    craigslistJobConsumer.SendQueuedEmail();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
+                    Url = "http://fayar.craigslist.org",
+                    Name = "Fayetteville",
+                    IsActive = true
+                });
 
-                Thread.Sleep(60000); //wait 1 minute between emails
+                db.SaveChanges();
             }
         }
     }

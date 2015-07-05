@@ -9,8 +9,8 @@ namespace CraigslistJobApplier.Entities
     public class Email
     {
         public Int32 EmailId { get; set; }
-        public String Email1 { get; set; }
-        public String MessageSubject { get; set; }
+        public String Address { get; set; }
+        public String Subject { get; set; }
         public String Location { get; set; }
         public Boolean HasBeenSent { get; set; }
     }
