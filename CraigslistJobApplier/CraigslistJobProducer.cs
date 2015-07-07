@@ -100,7 +100,7 @@ namespace CraigslistJobApplier
                 if (link != null)
                 {
                     var replyPath = link.GetAttributeValue("href", null);
-                    replyUrls.Add(craigslistUrl + replyPath);
+                    replyUrls.Add(GetCraigslistBaseUrl(craigslistUrl) + replyPath);
                 }
             }
 
@@ -112,7 +112,7 @@ namespace CraigslistJobApplier
             var jobUrls = new List<String>();
 
             var webClient = new HtmlWeb();
-            var doc = webClient.Load(craigslistUrl + "/search/sof");
+            var doc = webClient.Load(craigslistUrl);
 
             foreach (var link in doc.DocumentNode.SelectNodes("//a[@class='hdrlnk']"))
             {
@@ -121,10 +121,15 @@ namespace CraigslistJobApplier
                 // Craigslist sometimes returns results for nearby areas.
                 // these links will be absolute URLs, so they can be filtered out by looking for "craigslist"
                 if(!jobPath.Contains("craigslist"))
-                    jobUrls.Add(craigslistUrl + jobPath);
+                    jobUrls.Add(GetCraigslistBaseUrl(craigslistUrl) + jobPath);
             }
 
             return jobUrls;
+        }
+
+        private String GetCraigslistBaseUrl(String craigslistUrl)
+        {
+            return Regex.Match(craigslistUrl, @"http:\/\/.*\.org").ToString();
         }
     }
 }

@@ -1,2 +1,2 @@
 # CraigslistJobApplier
-Automatically applies to software job postings on Craigslist in select areas.
+Automatically applies to job postings on Craigslist.
