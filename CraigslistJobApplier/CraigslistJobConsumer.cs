@@ -23,7 +23,7 @@ namespace CraigslistJobApplier
             {
                 try
                 {
-                    SendQueuedEmail(fromGmailAddress, fromGmailPassword, message, resume, email);
+                    SendQueuedEmail(fromGmailAddress, fromGmailPassword, ReplacePlaceholders(message, email), resume, email);
                     email.HasBeenSent = true;
                     UpdateDetachedEmail(email);
                 }
@@ -31,14 +31,12 @@ namespace CraigslistJobApplier
                 {
                     Console.WriteLine(ex.ToString());
                 }
-                //Thread.Sleep(60000); //wait 1 minute between emails
+                Thread.Sleep(60000); //wait 1 minute between emails
             }
         }
 
         private void SendQueuedEmail(String fromGmailAddress, String fromGmailPassword, String message, FileInfo resume, Email email)
         {
-            message = message.Replace("{location}", email.Location);
-
             var smtp = new SmtpClient
             {
                 Host = "smtp.gmail.com",
@@ -56,6 +54,11 @@ namespace CraigslistJobApplier
             }
 
             Console.WriteLine("Applied to {0} in {1}", email.Subject, email.Location);
+        }
+
+        private String ReplacePlaceholders(String message, Email email)
+        {
+            return message.Replace("{location", email.Location);
         }
 
         private void UpdateDetachedEmail(Email detachedEmail)
