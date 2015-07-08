@@ -15,7 +15,7 @@ namespace CraigslistJobApplier
             //TODO: use arguments for these
             var craigslistUrl = "http://fayar.craigslist.org/search/sof";
             var gmailAddress = "dylanbajen@gmail.com";
-            var gmailPassword = "77832481!";
+            var gmailPassword = "******";
             var message = File.ReadAllText(@"C:\Users\Dylan\Downloads\applicationBlurb.txt");
             var resume = @"C:\Users\Dylan\Downloads\DylanBajenResume.doc";
             var sentEmailsOutput = "sentEmails.txt";
