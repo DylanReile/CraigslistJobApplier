@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
-using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
@@ -13,39 +12,29 @@ namespace CraigslistJobApplier
     {
         static void Main(String[] args)
         {
-            //AddLocation();
-            //ProducerEntrypoint();
-            ConsumerEntrypoint();
-        }
-
-        static void ProducerEntrypoint()
-        {
-            var craigslistJobProducer = new CraigslistJobProducer();
-            craigslistJobProducer.QueueEmails();
-        }
-
-        static void ConsumerEntrypoint()
-        {
-            //TODO: use arguments for message file location, resume file location, and gmail credentials
+            //TODO: use arguments for these
+            var craigslistUrl = "http://fayar.craigslist.org/search/sof";
+            var gmailAddress = "dylanbajen@gmail.com";
+            var gmailPassword = "77832481!";
             var message = File.ReadAllText(@"C:\Users\Dylan\Downloads\applicationBlurb.txt");
-            var resume = new FileInfo(@"C:\Users\Dylan\Downloads\DylanBajenResume.doc");
-            var craigslistJobConsumer = new CraigslistJobConsumer();
-            craigslistJobConsumer.SendQueuedEmails("dylanbajen@gmail.com", "*******", message, resume);
-        }
+            var resume = @"C:\Users\Dylan\Downloads\DylanBajenResume.doc";
+            var sentEmailsOutput = "sentEmails.txt";
+            var secondsBetweenEmails = 0;
 
-        static void AddLocation()
-        {
-            using (var db = new CraigslistContext())
+            var craigslistJobProducer = new CraigslistJobProducer();
+            var emailsAndSubjects = craigslistJobProducer.GetEmailsAndSubjects(craigslistUrl);
+            Console.WriteLine("{0} emails produced", emailsAndSubjects.Count());
+
+            var craigslistJobConsumer = new CraigslistJobConsumer()
             {
-                db.Locations.Add(new Location()
-                {
-                    Url = "http://fayar.craigslist.org",
-                    Name = "Fayetteville",
-                    IsActive = true
-                });
-
-                db.SaveChanges();
-            }
+                GmailAddress = gmailAddress,
+                GmailPassword = gmailPassword,
+                Message = message,
+                Resume = resume,
+                SentEmailsOutput = sentEmailsOutput,
+                SecondsBetweenEmails = secondsBetweenEmails
+            };
+            craigslistJobConsumer.SendEmails(emailsAndSubjects);
         }
     }
 }

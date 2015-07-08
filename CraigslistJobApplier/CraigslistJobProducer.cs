@@ -8,57 +8,17 @@ using System.IO;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using System.Web;
-using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
     class CraigslistJobProducer
     {
-        public void QueueEmails()
+        public List<Tuple<String, String>> GetEmailsAndSubjects(String craigslistUrl)
         {
-            List<Location> activeLocations;
-            using (var context = new CraigslistContext())
-            {
-                activeLocations = context.Locations.Where(x => x.IsActive == true).ToList();
-            }
-            
-            foreach (var location in activeLocations)
-            {
-                QueueEmailsForLocation(location);
-                //Thread.Sleep(60000 * 30); //wait thirty minutes between locations
-            }
-        }
-
-        private void QueueEmailsForLocation(Location location)
-        {
-            var jobUrls = ExtractJobUrls(location.Url);
-            var replyUrls = ExtractReplyUrls(jobUrls, location.Url);
+            var jobUrls = ExtractJobUrls(craigslistUrl);
+            var replyUrls = ExtractReplyUrls(jobUrls, craigslistUrl);
             var emailsAndSubjects = ExtractEmailsAndSubjects(replyUrls);
-
-            // add emails to database
-            using (var context = new CraigslistContext())
-            {
-                int emailsQueued = 0;
-
-                foreach(var emailAndSubject in emailsAndSubjects)
-                {
-                    //if the email has not already been queued
-                    if (!context.Emails.Where(x => x.Address == emailAndSubject.Item1).Any())
-                    {
-                        context.Emails.Add(new Email()
-                        {
-                            Address = emailAndSubject.Item1,
-                            Subject = emailAndSubject.Item2,
-                            Location = location.Name,
-                            HasBeenSent = false
-                        });
-
-                        context.SaveChanges();
-                        emailsQueued++;
-                    }
-                }
-                Console.WriteLine("Queued {0} emails for {1}", emailsQueued, location.Name);
-            }
+            return emailsAndSubjects;
         }
 
         private List<Tuple<String, String>> ExtractEmailsAndSubjects(List<String> replyUrls)
