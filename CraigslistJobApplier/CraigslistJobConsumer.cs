@@ -9,30 +9,30 @@ using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
-    public class CraigslistJobConsumer
+    class CraigslistJobConsumer
     {
         public String GmailAddress { get; set; }
         public String GmailPassword { get; set; }
-        public String Message { get; set; }
-        public String Resume { get; set; }
-        public String SentEmailsOutput { get; set; }
+        public String MessageFile { get; set; }
+        public String ResumeFile { get; set; }
+        public String SentEmailsOutputFile { get; set; }
         public Int32 SecondsBetweenEmails { get; set; }
 
         public void SendEmails(List<Email> emails)
         {
-            if (!File.Exists(SentEmailsOutput))
-                File.Create(SentEmailsOutput).Close();
+            if (!File.Exists(SentEmailsOutputFile))
+                File.Create(SentEmailsOutputFile).Close();
 
             foreach (var email in emails)
             {
                 //only email if we haven't already sent an email to that address
-                if(!File.ReadLines(SentEmailsOutput).Any(line => line.Contains(email.Address)))
+                if(!File.ReadLines(SentEmailsOutputFile).Any(line => line.Contains(email.Address)))
                 {
                     try
                     {
                         SendEmail(email);
                         //persit email address to file of already sent addresses
-                        File.AppendAllText(SentEmailsOutput, email.Address + Environment.NewLine);
+                        File.AppendAllText(SentEmailsOutputFile, email.Address + Environment.NewLine);
                         Console.WriteLine("Applied to {0}", email.Subject);
                     }
                     catch (Exception ex)
@@ -55,10 +55,11 @@ namespace CraigslistJobApplier
                 UseDefaultCredentials = false,
                 Credentials = new NetworkCredential(GmailAddress, GmailPassword)
             };
-
-            using (var gmail = new MailMessage(GmailAddress, email.Address, email.Subject, Message))
+            
+            var message = File.ReadAllText(MessageFile);
+            using (var gmail = new MailMessage(GmailAddress, email.Address, email.Subject, message))
             {
-                gmail.Attachments.Add(new System.Net.Mail.Attachment(Resume));
+                gmail.Attachments.Add(new System.Net.Mail.Attachment(ResumeFile));
                 smtp.Send(gmail);
             }
         }

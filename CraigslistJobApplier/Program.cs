@@ -12,29 +12,24 @@ namespace CraigslistJobApplier
     {
         static void Main(String[] args)
         {
-            //TODO: use arguments for these
-            var craigslistUrl = "http://newlondon.craigslist.org/search/edu";
-            var gmailAddress = "dylanbajen@gmail.com";
-            var gmailPassword = "********";
-            var message = File.ReadAllText(@"C:\Users\Dylan\Downloads\applicationBlurb.txt");
-            var resume = @"C:\Users\Dylan\Downloads\DylanBajenResume.doc";
-            var sentEmailsOutput = "sentEmails.txt";
-            var secondsBetweenEmails = 0;
-
-            var craigslistJobProducer = new CraigslistJobProducer();
-            var emails = craigslistJobProducer.GetEmails(craigslistUrl);
-            Console.WriteLine("{0} emails produced", emails.Count());
-
-            var craigslistJobConsumer = new CraigslistJobConsumer()
+            var options = new Options();
+            if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
-                GmailAddress = gmailAddress,
-                GmailPassword = gmailPassword,
-                Message = message,
-                Resume = resume,
-                SentEmailsOutput = sentEmailsOutput,
-                SecondsBetweenEmails = secondsBetweenEmails
-            };
-            craigslistJobConsumer.SendEmails(emails);
+                var craigslistJobProducer = new CraigslistJobProducer();
+                var emails = craigslistJobProducer.GetEmails(options.CraigslistUrl);
+                Console.WriteLine("{0} emails produced", emails.Count());
+
+                var craigslistJobConsumer = new CraigslistJobConsumer()
+                {
+                    GmailAddress = options.GmailAddress,
+                    GmailPassword = options.GmailPassword,
+                    MessageFile = options.MessageFile,
+                    ResumeFile = options.ResumeFile,
+                    SentEmailsOutputFile = options.SentEmailsOutputFile,
+                    SecondsBetweenEmails = options.SecondsBetweenEmails
+                };
+                craigslistJobConsumer.SendEmails(emails);
+            }
         }
     }
 }
