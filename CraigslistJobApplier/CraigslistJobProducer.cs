@@ -6,25 +6,25 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
-using HtmlAgilityPack;
 using System.Web;
+using HtmlAgilityPack;
+using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
     class CraigslistJobProducer
     {
-        public List<Tuple<String, String>> GetEmailsAndSubjects(String craigslistUrl)
+        public List<Email> GetEmails(String craigslistUrl)
         {
             var jobUrls = ExtractJobUrls(craigslistUrl);
             var replyUrls = ExtractReplyUrls(jobUrls, craigslistUrl);
-            var emailsAndSubjects = ExtractEmailsAndSubjects(replyUrls);
-            return emailsAndSubjects;
+            var emails = ExtractEmails(replyUrls);
+            return emails;
         }
 
-        private List<Tuple<String, String>> ExtractEmailsAndSubjects(List<String> replyUrls)
+        private List<Email> ExtractEmails(List<String> replyUrls)
         {
-            var emailsAndSubjects = new List<Tuple<String, String>>();
-
+            var emails = new List<Email>();
             var webClient = new HtmlWeb();
 
             foreach(var replyUrl in replyUrls)
@@ -35,20 +35,22 @@ namespace CraigslistJobApplier
         
                 if (link != null)
                 {
-                    var email = link.InnerHtml;
+                    var address = link.InnerHtml;
                     var subject = title.InnerHtml;
                     subject = Regex.Match(subject, @"(?<= - ).+").ToString();
-                    emailsAndSubjects.Add(new Tuple<String, String>(email, subject));
+                    emails.Add(new Email() {
+                        Address = address,
+                        Subject = subject
+                    });
                 }
             }
 
-            return emailsAndSubjects;
+            return emails;
         }
 
         private List<String> ExtractReplyUrls(List<String> jobUrls, String craigslistUrl)
         {
             var replyUrls = new List<String>();
-
             var webClient = new HtmlWeb();
 
             foreach(var jobUrl in jobUrls)
@@ -70,7 +72,6 @@ namespace CraigslistJobApplier
         private List<String> ExtractJobUrls(String craigslistUrl)
         {
             var jobUrls = new List<String>();
-
             var webClient = new HtmlWeb();
             var doc = webClient.Load(craigslistUrl);
 

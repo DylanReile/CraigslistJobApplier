@@ -5,6 +5,7 @@ using System.Net.Mail;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
+using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
@@ -17,22 +18,19 @@ namespace CraigslistJobApplier
         public String SentEmailsOutput { get; set; }
         public Int32 SecondsBetweenEmails { get; set; }
 
-        public void SendEmails(List<Tuple<String, String>> emailsAndSubjects)
+        public void SendEmails(List<Email> emails)
         {
-            foreach (var emailAndSubject in emailsAndSubjects)
+            foreach (var email in emails)
             {
-                var address = emailAndSubject.Item1;
-                var subject = emailAndSubject.Item2;
-
                 //only email if we haven't already sent an email to that address
-                if(!File.ReadLines(SentEmailsOutput).Any(line => line.Contains(address)))
+                if(!File.ReadLines(SentEmailsOutput).Any(line => line.Contains(email.Address)))
                 {
                     try
                     {
-                        SendEmail(address, subject);
+                        SendEmail(email);
                         //persit email address to file of already sent addresses
-                        File.AppendAllText(SentEmailsOutput, address + Environment.NewLine);
-                        Console.WriteLine("Applied to {0}", subject);
+                        File.AppendAllText(SentEmailsOutput, email.Address + Environment.NewLine);
+                        Console.WriteLine("Applied to {0}", email.Subject);
                     }
                     catch (Exception ex)
                     {
@@ -43,7 +41,7 @@ namespace CraigslistJobApplier
             }
         }
 
-        private void SendEmail(String address, String subject)
+        private void SendEmail(Email email)
         {
             var smtp = new SmtpClient
             {
@@ -55,7 +53,7 @@ namespace CraigslistJobApplier
                 Credentials = new NetworkCredential(GmailAddress, GmailPassword)
             };
 
-            using (var gmail = new MailMessage(GmailAddress, address, subject, Message))
+            using (var gmail = new MailMessage(GmailAddress, email.Address, email.Subject, Message))
             {
                 gmail.Attachments.Add(new System.Net.Mail.Attachment(Resume));
                 smtp.Send(gmail);

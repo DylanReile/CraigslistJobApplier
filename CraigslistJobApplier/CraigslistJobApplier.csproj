@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="CraigslistJobConsumer.cs" />
     <Compile Include="CraigslistJobProducer.cs" />
+    <Compile Include="Entities\Email.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
