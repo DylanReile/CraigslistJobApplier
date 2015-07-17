@@ -20,6 +20,9 @@ namespace CraigslistJobApplier
 
         public void SendEmails(List<Email> emails)
         {
+            if (!File.Exists(SentEmailsOutput))
+                File.Create(SentEmailsOutput).Close();
+
             foreach (var email in emails)
             {
                 //only email if we haven't already sent an email to that address
