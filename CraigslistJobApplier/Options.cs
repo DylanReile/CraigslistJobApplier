@@ -41,7 +41,7 @@ namespace CraigslistJobApplier
                 Heading = "CraigslistJobApplier v0.1: github.com/DylanReile/CraigslistJobApplier"
             };
             help.AddOptions(this);
-            help.AddPostOptionsLine(@"Example usage: CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m C:\Users\bob\Documents\applicationBlurb.txt -r C:\Users\bob\Documents\BobResume.pdf -o emailsLog.txt -s 60");
+            help.AddPostOptionsLine(@"Example usage: CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m applicationBlurb.txt -r BobResume.pdf -o emailsLog.txt -s 60");
             return help;
         }
     }

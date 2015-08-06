@@ -13,23 +13,28 @@ namespace CraigslistJobApplier
         static void Main(String[] args)
         {
             var options = new Options();
-            if (CommandLine.Parser.Default.ParseArguments(args, options))
+            CommandLine.Parser.Default.ParseArgumentsStrict(args, options);
+            var validationErrors = InputValidator.GetValidationErrors(options);
+            if(validationErrors.Any())
             {
-                var craigslistJobProducer = new CraigslistJobProducer();
-                var emails = craigslistJobProducer.GetEmails(options.CraigslistUrl);
-                Console.WriteLine("{0} emails produced", emails.Count());
-
-                var craigslistJobConsumer = new CraigslistJobConsumer()
-                {
-                    GmailAddress = options.GmailAddress,
-                    GmailPassword = options.GmailPassword,
-                    MessageFile = options.MessageFile,
-                    ResumeFile = options.ResumeFile,
-                    SentEmailsOutputFile = options.SentEmailsOutputFile,
-                    SecondsBetweenEmails = options.SecondsBetweenEmails
-                };
-                craigslistJobConsumer.SendEmails(emails);
+                validationErrors.ForEach(e => Console.WriteLine(e));
+                return;
             }
+
+            var craigslistJobProducer = new CraigslistJobProducer();
+            var emails = craigslistJobProducer.GetEmails(options.CraigslistUrl);
+            Console.WriteLine("{0} emails produced", emails.Count());
+
+            var craigslistJobConsumer = new CraigslistJobConsumer()
+            {
+                GmailAddress = options.GmailAddress,
+                GmailPassword = options.GmailPassword,
+                MessageFile = options.MessageFile,
+                ResumeFile = options.ResumeFile,
+                SentEmailsOutputFile = options.SentEmailsOutputFile,
+                SecondsBetweenEmails = options.SecondsBetweenEmails
+            };
+            craigslistJobConsumer.SendEmails(emails);
         }
     }
 }
