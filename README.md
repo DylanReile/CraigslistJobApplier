@@ -1,6 +1,6 @@
-Automatically applies to job postings on Craigslist.
+# Automatically applies to job postings on Craigslist.
 
-- Command Line Usage
+### Command Line Usage
 
   -c, --craigslistUrl           Required. Craigslist URL for the target
                                 location and job category. EX:
@@ -27,4 +27,4 @@ Automatically applies to job postings on Craigslist.
 
 
 Example usage:
-CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m C:\Users\bob\Documents\applicationBlurb.txt -r C:\Users\bob\Documents\BobResume.pdf -o emailsLog.txt -s 60
+CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m applicationBlurb.txt -r BobResume.pdf -o emailsLog.txt -s 60
