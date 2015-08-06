@@ -1,5 +1,3 @@
-# Automatically applies to job postings on Craigslist.
-
 ### Command Line Usage
 
   -c, --craigslistUrl           Required. Craigslist URL for the target
