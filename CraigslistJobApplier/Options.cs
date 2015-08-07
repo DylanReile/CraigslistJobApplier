@@ -28,7 +28,7 @@ namespace CraigslistJobApplier
         [Option('o', "sentEmailsOutputFile", Required = true, HelpText = "File used to log email addresses that have already received emails. Used to avoid sending duplicates.")]
         public String SentEmailsOutputFile { get; set; }
 
-        [Option('s', "secondsBetweenEmails", Required = true, HelpText = "Seconds to wait between emails. Used to avoid Craigslist spam filters.")]
+        [Option('s', "secondsBetweenEmails", DefaultValue = 5, HelpText = "Seconds to wait between emails. Used to avoid Craigslist spam filters.")]
         public Int32 SecondsBetweenEmails { get; set; }
 
         [HelpOption(HelpText="Display this help screen")]
@@ -41,7 +41,7 @@ namespace CraigslistJobApplier
                 Heading = "CraigslistJobApplier v0.1: github.com/DylanReile/CraigslistJobApplier"
             };
             help.AddOptions(this);
-            help.AddPostOptionsLine(@"Example usage: CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m applicationBlurb.txt -r BobResume.pdf -o emailsLog.txt -s 60");
+            help.AddPostOptionsLine(@"Example usage: CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m applicationBlurb.txt -r BobResume.pdf -o emailsLog.txt");
             return help;
         }
     }

@@ -18,11 +18,11 @@
                                 have already received emails. Used to avoid
                                 sending duplicates.
 
-  -s, --secondsBetweenEmails    Required. Seconds to wait between emails. Used
+  -s, --secondsBetweenEmails    <Default: 5> Seconds to wait between emails. Used
                                 to avoid Craigslist spam filters.
 
   --help                        Display this help screen
 
 
 Example usage:
-CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m applicationBlurb.txt -r BobResume.pdf -o emailsLog.txt -s 60
+CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m applicationBlurb.txt -r BobResume.pdf -o emailsLog.txt
