@@ -4,15 +4,14 @@
                                 location and job category. EX:
                                 http://nyc.craigslist.org/search/sof
 
-  -a, --gmailAddress            Required. Address of the Gmail account used to
+  -g, --gmailAddress            Required. Address of the Gmail account used to
                                 send emails. EX: bob@gmail.com
 
   -p, --gmailPassword           Required. Password to the Gmail account.
 
   -m, --messageFile             Required. File containing the email message.
 
-  -r, --resumeFile              Required. Resume file that will be attached to
-                                the email.
+  -a, --attachments             Files that will be attached to the email. Separated by ',' without spaces. EX:resume.pdf,coverLetter.pdf
 
   -o, --sentEmailsOutputFile    Required. File used to log email addresses that
                                 have already received emails. Used to avoid
@@ -25,4 +24,4 @@
 
 
 Example usage:
-CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -a bob@gmail.com -p hunter2 -m applicationBlurb.txt -r BobResume.pdf -o emailsLog.txt
+CraigslistJobApplier.exe -c http://nyc.craigslist.org/search/sof -g bob@gmail.com -p hunter2 -m applicationBlurb.txt -a resume.pdf,coverLetter.pdf -o emailsLog.txt

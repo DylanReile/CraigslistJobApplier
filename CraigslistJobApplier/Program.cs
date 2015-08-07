@@ -30,7 +30,7 @@ namespace CraigslistJobApplier
                 GmailAddress = options.GmailAddress,
                 GmailPassword = options.GmailPassword,
                 MessageFile = options.MessageFile,
-                ResumeFile = options.ResumeFile,
+                Attachments = options.Attachments,
                 SentEmailsOutputFile = options.SentEmailsOutputFile,
                 SecondsBetweenEmails = options.SecondsBetweenEmails
             };

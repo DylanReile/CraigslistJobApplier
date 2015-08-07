@@ -14,7 +14,7 @@ namespace CraigslistJobApplier
         public String GmailAddress { get; set; }
         public String GmailPassword { get; set; }
         public String MessageFile { get; set; }
-        public String ResumeFile { get; set; }
+        public IEnumerable<String> Attachments { get; set; }
         public String SentEmailsOutputFile { get; set; }
         public Int32 SecondsBetweenEmails { get; set; }
 
@@ -59,7 +59,11 @@ namespace CraigslistJobApplier
             var message = File.ReadAllText(MessageFile);
             using (var gmail = new MailMessage(GmailAddress, email.Address, email.Subject, message))
             {
-                gmail.Attachments.Add(new System.Net.Mail.Attachment(ResumeFile));
+                if (Attachments != null)
+                {
+                    foreach (var attachment in Attachments)
+                        gmail.Attachments.Add(new System.Net.Mail.Attachment(attachment));
+                }
                 smtp.Send(gmail);
             }
         }

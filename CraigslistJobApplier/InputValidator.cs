@@ -14,17 +14,23 @@ namespace CraigslistJobApplier
         {
             var validationErrors = new List<String>();
 
-            if (!File.Exists(options.ResumeFile))
-                validationErrors.Add("Resume file not found");
-
             if (!File.Exists(options.MessageFile))
-                validationErrors.Add("Message file not found");
+                validationErrors.Add(String.Format("Message file not found: {0}", options.MessageFile));
+
+            if (options.Attachments != null)
+            {
+                foreach (var attachment in options.Attachments)
+                {
+                    if (!File.Exists(attachment))
+                        validationErrors.Add(String.Format("File not found: {0}", attachment));
+                }
+            }
+
+            if (!IsValidCraigslistUrl(options.CraigslistUrl))
+                validationErrors.Add(String.Format("Invalid Craigslist URL ({0}). EX: http://nyc.craigslist.org/search/sof", options.CraigslistUrl));
 
             if (options.SecondsBetweenEmails < 0)
                 validationErrors.Add("SecondsBetweenEmails must be >= 0");
-
-            if (!IsValidCraigslistUrl(options.CraigslistUrl))
-                validationErrors.Add("Invalid Craigslist URL. EX: http://nyc.craigslist.org/search/sof");
 
             return validationErrors;
         }
@@ -33,11 +39,6 @@ namespace CraigslistJobApplier
         {
             var regex = new Regex(@"http:\/\/[A-z]+?.craigslist.org\/search\/[A-z]+");
             return regex.IsMatch(url);
-        }
-
-        private static bool IsValidGmailCredentials(String email, String password)
-        {
-            return false;
         }
     }
 }
