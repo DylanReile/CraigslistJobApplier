@@ -10,5 +10,7 @@ namespace CraigslistJobApplier.Entities
     {
         public String Address { get; set; }
         public String Subject { get; set; }
+        public String Message { get; set; }
+        public IEnumerable<String> Attachments { get; set; }
     }
 }

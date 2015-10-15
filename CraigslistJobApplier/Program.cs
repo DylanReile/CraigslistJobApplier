@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
+using System.Xml;
+using System.Xml.Linq;
+using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
@@ -12,29 +15,30 @@ namespace CraigslistJobApplier
     {
         static void Main(String[] args)
         {
+            //TODO: check if user is actually online
             var options = new Options();
             CommandLine.Parser.Default.ParseArgumentsStrict(args, options);
             var validationErrors = InputValidator.GetValidationErrors(options);
-            if(validationErrors.Any())
+            if (validationErrors.Any())
             {
                 validationErrors.ForEach(e => Console.WriteLine(e));
                 return;
             }
 
-            var craigslistJobProducer = new CraigslistJobProducer();
-            var emails = craigslistJobProducer.GetEmails(options.CraigslistUrl);
-            Console.WriteLine("{0} emails produced", emails.Count());
+            var jobs = CraigslistJobExtractor.GetJobs(options.CraigslistUrl);
+            Console.WriteLine("{0} emails produced", jobs.Count());
 
-            var craigslistJobConsumer = new CraigslistJobConsumer()
+            var message = File.ReadAllText(options.MessageFile);
+            var emails = EmailBuilder.GetEmails(jobs, message, options.Attachments);
+
+            var emailer = new Emailer()
             {
                 GmailAddress = options.GmailAddress,
                 GmailPassword = options.GmailPassword,
-                MessageFile = options.MessageFile,
-                Attachments = options.Attachments,
                 SentEmailsOutputFile = options.SentEmailsOutputFile,
                 SecondsBetweenEmails = options.SecondsBetweenEmails
             };
-            craigslistJobConsumer.SendEmails(emails);
+            emailer.SendEmails(emails);
         }
     }
 }

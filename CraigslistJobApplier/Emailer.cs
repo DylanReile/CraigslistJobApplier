@@ -9,16 +9,14 @@ using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
-    class CraigslistJobConsumer
+    class Emailer
     {
         public String GmailAddress { get; set; }
         public String GmailPassword { get; set; }
-        public String MessageFile { get; set; }
-        public IEnumerable<String> Attachments { get; set; }
         public String SentEmailsOutputFile { get; set; }
         public Int32 SecondsBetweenEmails { get; set; }
 
-        public void SendEmails(List<Email> emails)
+        public void SendEmails(IEnumerable<Email> emails)
         {
             if (!File.Exists(SentEmailsOutputFile))
                 File.Create(SentEmailsOutputFile).Close();
@@ -56,14 +54,11 @@ namespace CraigslistJobApplier
                 Credentials = new NetworkCredential(GmailAddress, GmailPassword)
             };
             
-            var message = File.ReadAllText(MessageFile);
-            using (var gmail = new MailMessage(GmailAddress, email.Address, email.Subject, message))
+            using (var gmail = new MailMessage(GmailAddress, email.Address, email.Subject, email.Message))
             {
-                if (Attachments != null)
-                {
-                    foreach (var attachment in Attachments)
-                        gmail.Attachments.Add(new System.Net.Mail.Attachment(attachment));
-                }
+                foreach (var attachment in email.Attachments)
+                    gmail.Attachments.Add(new Attachment(attachment));
+
                 smtp.Send(gmail);
             }
         }
