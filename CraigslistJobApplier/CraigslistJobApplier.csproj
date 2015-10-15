@@ -51,9 +51,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CraigslistJobConsumer.cs" />
-    <Compile Include="CraigslistJobProducer.cs" />
+    <Compile Include="EmailBuilder.cs" />
+    <Compile Include="Emailer.cs" />
+    <Compile Include="CraigslistJobExtractor.cs" />
     <Compile Include="Entities\Email.cs" />
+    <Compile Include="Entities\Job.cs" />
     <Compile Include="InputValidator.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
