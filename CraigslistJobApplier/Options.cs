@@ -34,6 +34,9 @@ namespace CraigslistJobApplier
         [Option("blacklistedTitleWordsFile", HelpText = "File that contains blacklisted title words (one per line). Will not email if the job has any of these words in its title")]
         public String BlacklistedTitleWordsFile { get; set; }
 
+        [Option("blacklistedDescriptionWordsFile", HelpText = "File that contains blacklisted description words (one per line). Will not email if the job has any of these words in its description")]
+        public String BlacklistedDescriptionWordsFile { get; set; }
+
         [HelpOption(HelpText="Display this help screen")]
         public String GetUsage()
         {
