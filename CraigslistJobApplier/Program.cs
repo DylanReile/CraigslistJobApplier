@@ -25,8 +25,16 @@ namespace CraigslistJobApplier
                 return;
             }
 
+            Console.WriteLine("Getting jobs from {0}...", options.CraigslistUrl);
             var jobs = CraigslistJobExtractor.GetJobs(options.CraigslistUrl);
-            Console.WriteLine("{0} emails produced", jobs.Count());
+            Console.WriteLine("{0} emails retreived", jobs.Count());
+
+            if (options.BlacklistedTitleWordsFile != null)
+            {
+                var blacklistedTitleWords = File.ReadAllText(options.BlacklistedTitleWordsFile).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                jobs = JobFilterer.FilterJobs(jobs, blacklistedTitleWords);
+            }
+            Console.WriteLine("{0} jobs meet the specified criteria", jobs.Count());
 
             var message = File.ReadAllText(options.MessageFile);
             var emails = EmailBuilder.GetEmails(jobs, message, options.Attachments);
