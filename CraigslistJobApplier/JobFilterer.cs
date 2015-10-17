@@ -3,13 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
 {
-    public static class JobFilterer
+    public class JobFilterer
     {
-        public static List<Job> FilterJobs(IEnumerable<Job> jobs, IEnumerable<String> blacklistedTitleWords)
+        private IEnumerable<String> _blacklistedTitleWords;
+        private IEnumerable<String> _blacklistedDescriptionWords;
+
+        public JobFilterer(String BlacklistedTitleWordsFile, String BlacklistedDescriptionWordsFile)
+        {
+            _blacklistedTitleWords = GetLinesFromFile(BlacklistedTitleWordsFile);
+            _blacklistedDescriptionWords = GetLinesFromFile(BlacklistedDescriptionWordsFile);
+        }
+
+        public JobFilterer(IEnumerable<String> blacklistedTitleWords, IEnumerable<String> blacklistedDescriptionWords)
+        {
+            _blacklistedTitleWords = blacklistedTitleWords;
+            _blacklistedDescriptionWords = blacklistedDescriptionWords;
+        }
+
+        public List<Job> FilterJobs(IEnumerable<Job> jobs)
         {
             var filteredJobs = new List<Job>();
 
@@ -17,7 +33,10 @@ namespace CraigslistJobApplier
             {
                 var meetsCriteria = true;
 
-                if (job.Title.Split(' ').Any(x => blacklistedTitleWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                if (job.Title.Split(' ').Any(x => _blacklistedTitleWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                    meetsCriteria = false;
+
+                if (job.Description.Split(' ').Any(x => _blacklistedDescriptionWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
                     meetsCriteria = false;
 
                 if (meetsCriteria)
@@ -25,6 +44,20 @@ namespace CraigslistJobApplier
             }
 
             return filteredJobs;
+        }
+
+        private static List<String> GetLinesFromFile(String fileName)
+        {
+            if (fileName != null)
+            {
+                return File.ReadAllText(fileName)
+                    .Split(new string[] { Environment.NewLine }, StringSplitOptions.None)
+                    .ToList();
+            }
+            else
+            {
+                return new List<String>();
+            }
         }
     }
 }
