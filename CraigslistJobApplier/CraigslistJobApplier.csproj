@@ -57,6 +57,7 @@
     <Compile Include="Entities\Email.cs" />
     <Compile Include="Entities\Job.cs" />
     <Compile Include="InputValidator.cs" />
+    <Compile Include="JobFilterer.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

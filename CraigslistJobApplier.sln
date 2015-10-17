@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CraigslistJobApplier", "CraigslistJobApplier\CraigslistJobApplier.csproj", "{FAA78BF6-9529-4926-ABCD-E76474123A7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CraigslistJobApplierTests", "CraigslistJobApplierTests\CraigslistJobApplierTests.csproj", "{054DF18C-C0FA-4BC6-99A3-2056D86CCE54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{FAA78BF6-9529-4926-ABCD-E76474123A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAA78BF6-9529-4926-ABCD-E76474123A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAA78BF6-9529-4926-ABCD-E76474123A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{054DF18C-C0FA-4BC6-99A3-2056D86CCE54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{054DF18C-C0FA-4BC6-99A3-2056D86CCE54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{054DF18C-C0FA-4BC6-99A3-2056D86CCE54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{054DF18C-C0FA-4BC6-99A3-2056D86CCE54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

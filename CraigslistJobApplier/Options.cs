@@ -31,6 +31,9 @@ namespace CraigslistJobApplier
         [Option('s', "secondsBetweenEmails", DefaultValue = 5, HelpText = "Seconds to wait between emails. Used to avoid Craigslist spam filters.")]
         public Int32 SecondsBetweenEmails { get; set; }
 
+        [Option("blacklistedTitleWordsFile", HelpText = "File that contains blacklisted title words (one per line). Will not email if the job has any of these words in its title")]
+        public String BlacklistedTitleWordsFile { get; set; }
+
         [HelpOption(HelpText="Display this help screen")]
         public String GetUsage()
         {
