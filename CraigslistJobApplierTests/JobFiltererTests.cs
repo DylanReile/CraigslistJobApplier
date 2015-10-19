@@ -19,7 +19,7 @@ namespace CraigslistJobApplierTests
             var unfilteredJobs = GetUnfilteredJobs();
 
             //act
-            var jobFilterer = new JobFilterer(blacklistedTitleWords, new List<String>(), new List<String>());
+            var jobFilterer = new JobFilterer(blacklistedTitleWords, new List<String>(), new List<String>(), new List<String>());
             var filteredjobs = jobFilterer.FilterJobs(unfilteredJobs);
 
             //assert
@@ -35,7 +35,7 @@ namespace CraigslistJobApplierTests
             var unfilteredJobs = GetUnfilteredJobs();
 
             //act
-            var jobFilterer = new JobFilterer(new List<String>(), blacklistedDescriptionWords, new List<String>());
+            var jobFilterer = new JobFilterer(new List<String>(), blacklistedDescriptionWords, new List<String>(), new List<String>());
             var filteredJobs = jobFilterer.FilterJobs(unfilteredJobs);
 
             //assert
@@ -51,7 +51,23 @@ namespace CraigslistJobApplierTests
             var unfilteredJobs = GetUnfilteredJobs();
 
             //act
-            var jobFilterer = new JobFilterer(new List<String>(), new List<String>(), whitelistedTitleWords);
+            var jobFilterer = new JobFilterer(new List<String>(), new List<String>(), whitelistedTitleWords, new List<String>());
+            var filteredJobs = jobFilterer.FilterJobs(unfilteredJobs);
+
+            //assert
+            Assert.AreEqual(remainingJobsCount, filteredJobs.Count);
+        }
+
+        [TestCase(new String[] { "C#" }, 2, TestName = "WhitelistedDescriptionWords_One")]
+        [TestCase(new String[] { ".NET", "designer" }, 2, TestName = "WhitelistedDescriptionWords_Two")]
+        [TestCase(new String[] { ".nEt" }, 1, TestName = "WhitelistedDescriptionWords_CaseInsensitivity")]
+        public void WhitelistedDescriptionWords(String[] whitelistedDescriptionWords, int remainingJobsCount)
+        {
+            //arrange
+            var unfilteredJobs = GetUnfilteredJobs();
+
+            //act
+            var jobFilterer = new JobFilterer(new List<String>(), new List<String>(), new List<String>(), whitelistedDescriptionWords);
             var filteredJobs = jobFilterer.FilterJobs(unfilteredJobs);
 
             //assert
@@ -64,7 +80,7 @@ namespace CraigslistJobApplierTests
             {
                 new Job() { Title= "Senior Developer", Description = "C# and .NET lead", EmailAddress = "senior@dev.com" },
                 new Job() { Title= "UX manager", Description = "User interfaces and experience. Designer", EmailAddress ="ux@manager.com" },
-                new Job() { Title = "Senior ETL Engineer", Description="C#, ETL data migrations and data modeling", EmailAddress = "etl@engineer.com" }
+                new Job() { Title = "Senior ETL Engineer", Description="C# , ETL data migrations and data modeling", EmailAddress = "etl@engineer.com" }
             };
         }
     }

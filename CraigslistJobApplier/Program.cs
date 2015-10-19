@@ -33,7 +33,8 @@ namespace CraigslistJobApplier
                 (
                 options.BlacklistedTitleWordsFile,
                 options.BlacklistedDescriptionWordsFile,
-                options.WhitelistedTitleWordsFile
+                options.WhitelistedTitleWordsFile,
+                options.WhitelistedDescriptionWordsFile
                 );
             jobs = jobFilterer.FilterJobs(jobs);
             Console.WriteLine("{0} jobs meet the specified criteria", jobs.Count());

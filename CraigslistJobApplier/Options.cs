@@ -40,6 +40,9 @@ namespace CraigslistJobApplier
         [Option("whitelistedTitleWordsFile", HelpText = "File that contains whitelisted title words (one per line). Will only email if the job has at least one of these words in its title")]
         public String WhitelistedTitleWordsFile { get; set; }
 
+        [Option("whitelistedDescriptionWordsFile", HelpText = "File that contains whitelisted description words (one per line). Will only email if the job has at least one of these words in its description")]
+        public String WhitelistedDescriptionWordsFile { get; set; }
+
         [HelpOption(HelpText="Display this help screen")]
         public String GetUsage()
         {
