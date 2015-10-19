@@ -23,6 +23,9 @@ namespace CraigslistJobApplier
             if (options.BlacklistedDescriptionWordsFile != null && !File.Exists(options.BlacklistedDescriptionWordsFile))
                 validationErrors.Add(String.Format("BlacklistedDescriptionWordsFile file not found: {0}", options.BlacklistedDescriptionWordsFile));
 
+            if (options.WhitelistedTitleWordsFile != null && !File.Exists(options.WhitelistedTitleWordsFile))
+                validationErrors.Add(String.Format("WhitelistedTitleWordsFile file not found: {0}", options.WhitelistedTitleWordsFile));
+
             if (options.Attachments != null)
             {
                 foreach (var attachment in options.Attachments)

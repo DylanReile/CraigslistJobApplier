@@ -19,7 +19,7 @@ namespace CraigslistJobApplierTests
             var unfilteredJobs = GetUnfilteredJobs();
 
             //act
-            var jobFilterer = new JobFilterer(blacklistedTitleWords, new List<String>());
+            var jobFilterer = new JobFilterer(blacklistedTitleWords, new List<String>(), new List<String>());
             var filteredjobs = jobFilterer.FilterJobs(unfilteredJobs);
 
             //assert
@@ -35,7 +35,23 @@ namespace CraigslistJobApplierTests
             var unfilteredJobs = GetUnfilteredJobs();
 
             //act
-            var jobFilterer = new JobFilterer(new List<String>(), blacklistedDescriptionWords);
+            var jobFilterer = new JobFilterer(new List<String>(), blacklistedDescriptionWords, new List<String>());
+            var filteredJobs = jobFilterer.FilterJobs(unfilteredJobs);
+
+            //assert
+            Assert.AreEqual(remainingJobsCount, filteredJobs.Count);
+        }
+
+        [TestCase(new String[] { "Senior" }, 2, TestName = "WhitelistedTitleWords_One")]
+        [TestCase(new String[] { "Senior", "ETL" }, 2, TestName = "WhitelistedTitleWords_Two")]
+        [TestCase(new String[] { "SEniOR" }, 2, TestName = "WhitelistedTitleWords_CaseInsensitivity")]
+        public void WhitelistedTitleWords(String[] whitelistedTitleWords, int remainingJobsCount)
+        {
+            //arrange
+            var unfilteredJobs = GetUnfilteredJobs();
+
+            //act
+            var jobFilterer = new JobFilterer(new List<String>(), new List<String>(), whitelistedTitleWords);
             var filteredJobs = jobFilterer.FilterJobs(unfilteredJobs);
 
             //assert
@@ -48,7 +64,7 @@ namespace CraigslistJobApplierTests
             {
                 new Job() { Title= "Senior Developer", Description = "C# and .NET lead", EmailAddress = "senior@dev.com" },
                 new Job() { Title= "UX manager", Description = "User interfaces and experience. Designer", EmailAddress ="ux@manager.com" },
-                new Job() { Title = "ETL Engineer", Description="ETL data migrations and data modeling", EmailAddress = "etl@engineer.com" }
+                new Job() { Title = "Senior ETL Engineer", Description="C#, ETL data migrations and data modeling", EmailAddress = "etl@engineer.com" }
             };
         }
     }
