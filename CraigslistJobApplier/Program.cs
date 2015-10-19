@@ -29,7 +29,13 @@ namespace CraigslistJobApplier
             var jobs = CraigslistJobExtractor.GetJobs(options.CraigslistUrl);
             Console.WriteLine("{0} jobs retreived", jobs.Count());
 
-            var jobFilterer = new JobFilterer(options.BlacklistedTitleWordsFile, options.BlacklistedDescriptionWordsFile);
+            var jobFilterer = new JobFilterer
+                (
+                options.BlacklistedTitleWordsFile,
+                options.BlacklistedDescriptionWordsFile,
+                options.WhitelistedTitleWordsFile,
+                options.WhitelistedDescriptionWordsFile
+                );
             jobs = jobFilterer.FilterJobs(jobs);
             Console.WriteLine("{0} jobs meet the specified criteria", jobs.Count());
 

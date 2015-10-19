@@ -12,17 +12,29 @@ namespace CraigslistJobApplier
     {
         private IEnumerable<String> _blacklistedTitleWords;
         private IEnumerable<String> _blacklistedDescriptionWords;
+        private IEnumerable<String> _whitelistedTitleWords;
+        private IEnumerable<String> _whitelistedDescriptionWords;
 
-        public JobFilterer(String BlacklistedTitleWordsFile, String BlacklistedDescriptionWordsFile)
+        public JobFilterer(String blacklistedTitleWordsFile,
+                           String blacklistedDescriptionWordsFile,
+                           String whitelistedTitleWordsFile,
+                           String whitelistedDescriptionWordsFile)
         {
-            _blacklistedTitleWords = GetLinesFromFile(BlacklistedTitleWordsFile);
-            _blacklistedDescriptionWords = GetLinesFromFile(BlacklistedDescriptionWordsFile);
+            _blacklistedTitleWords = GetLinesFromFile(blacklistedTitleWordsFile);
+            _blacklistedDescriptionWords = GetLinesFromFile(blacklistedDescriptionWordsFile);
+            _whitelistedTitleWords = GetLinesFromFile(whitelistedTitleWordsFile);
+            _whitelistedDescriptionWords = GetLinesFromFile(whitelistedDescriptionWordsFile);
         }
 
-        public JobFilterer(IEnumerable<String> blacklistedTitleWords, IEnumerable<String> blacklistedDescriptionWords)
+        public JobFilterer(IEnumerable<String> blacklistedTitleWords,
+                           IEnumerable<String> blacklistedDescriptionWords,
+                           IEnumerable<String> whitelistedTitleWords,
+                           IEnumerable<String> whitelistedDescriptionWords)
         {
             _blacklistedTitleWords = blacklistedTitleWords;
             _blacklistedDescriptionWords = blacklistedDescriptionWords;
+            _whitelistedTitleWords = whitelistedTitleWords;
+            _whitelistedDescriptionWords = whitelistedDescriptionWords;
         }
 
         public List<Job> FilterJobs(IEnumerable<Job> jobs)
@@ -31,13 +43,32 @@ namespace CraigslistJobApplier
 
             foreach(var job in jobs)
             {
+                var titleWords = job.Title.Split(' ');
+                var descriptionWords = job.Description.Split(' ');
+
                 var meetsCriteria = true;
 
-                if (job.Title.Split(' ').Any(x => _blacklistedTitleWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                //title contains any blacklisted words
+                if (titleWords.Any(x => _blacklistedTitleWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
                     meetsCriteria = false;
 
-                if (job.Description.Split(' ').Any(x => _blacklistedDescriptionWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                //description contains any blacklisted words
+                if (descriptionWords.Any(x => _blacklistedDescriptionWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
                     meetsCriteria = false;
+
+                //title doesn't contain at least one of the whitelisted words
+                if (_whitelistedTitleWords.Count() != 0)
+                {
+                    if (!titleWords.Any(x => _whitelistedTitleWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                        meetsCriteria = false;
+                }
+
+                //description doesn't contain at least one of the whitelisted words
+                if (_whitelistedDescriptionWords.Count() != 0)
+                {
+                    if (!descriptionWords.Any(x => _whitelistedDescriptionWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                        meetsCriteria = false;
+                }
 
                 if (meetsCriteria)
                     filteredJobs.Add(job);
