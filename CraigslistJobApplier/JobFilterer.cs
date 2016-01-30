@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using CraigslistJobApplier;
 using CraigslistJobApplier.Entities;
 
 namespace CraigslistJobApplier
@@ -40,6 +41,7 @@ namespace CraigslistJobApplier
         public List<Job> FilterJobs(IEnumerable<Job> jobs)
         {
             var filteredJobs = new List<Job>();
+            var punctiationInsensitiveComparer = new PunctuationInsensitiveComparer();
 
             foreach(var job in jobs)
             {
@@ -49,24 +51,24 @@ namespace CraigslistJobApplier
                 var meetsCriteria = true;
 
                 //title contains any blacklisted words
-                if (titleWords.Any(x => _blacklistedTitleWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                if (titleWords.Any(x => _blacklistedTitleWords.Contains(x, punctiationInsensitiveComparer)))
                     meetsCriteria = false;
 
                 //description contains any blacklisted words
-                if (descriptionWords.Any(x => _blacklistedDescriptionWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                if (descriptionWords.Any(x => _blacklistedDescriptionWords.Contains(x, punctiationInsensitiveComparer)))
                     meetsCriteria = false;
 
                 //title doesn't contain at least one of the whitelisted words
                 if (_whitelistedTitleWords.Count() != 0)
                 {
-                    if (!titleWords.Any(x => _whitelistedTitleWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                    if (!titleWords.Any(x => _whitelistedTitleWords.Contains(x, punctiationInsensitiveComparer)))
                         meetsCriteria = false;
                 }
 
                 //description doesn't contain at least one of the whitelisted words
                 if (_whitelistedDescriptionWords.Count() != 0)
                 {
-                    if (!descriptionWords.Any(x => _whitelistedDescriptionWords.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                    if (!descriptionWords.Any(x => _whitelistedDescriptionWords.Contains(x, punctiationInsensitiveComparer)))
                         meetsCriteria = false;
                 }
 

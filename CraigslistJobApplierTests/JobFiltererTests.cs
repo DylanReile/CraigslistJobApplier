@@ -14,6 +14,7 @@ namespace CraigslistJobApplierTests
         [TestCase(new String[] {"manager", "developer"}, 1, TestName = "BlackListedTitleWords_Two")]
         [TestCase(new String[] { "MaNaGeR" }, 2, TestName = "BlackListedTitleWords_CaseInsensitivity")]
         [TestCase(new String[] { "Rockstar" }, 0, TestName = "BlackListedTitleWords_FilterOutAll")]
+        [TestCase(new String[] { ",manager." }, 2, TestName = "BlackListedTitleWords_PuncutationInsensitivity")]
         public void BlackListedTitleWords(String[] blacklistedTitleWords, int remainingJobCount)
         {
             //arrange
@@ -31,6 +32,7 @@ namespace CraigslistJobApplierTests
         [TestCase(new String[] { "data" }, 2, TestName = "BlackListedDescriptionWords_One")]
         [TestCase(new String[] { "dAtA" }, 2, TestName = "BlackListedDescriptionWords_CaseInsensitivity")]
         [TestCase(new String[] { "Jedi" }, 0, TestName = "BlackListedDescriptionWords_FilterOutAll")]
+        [TestCase(new String[] { "Je.di," }, 0, TestName = "BlackListedDescriptionWords_PuncutationInsensitivity")]
         public void BlackListedDescriptionWords(String[] blacklistedDescriptionWords, int remainingJobsCount)
         {
             //arrange
@@ -48,6 +50,7 @@ namespace CraigslistJobApplierTests
         [TestCase(new String[] { "Senior", "ETL" }, 2, TestName = "WhitelistedTitleWords_Two")]
         [TestCase(new String[] { "SEniOR" }, 2, TestName = "WhitelistedTitleWords_CaseInsensitivity")]
         [TestCase(new String[] { "Billion" }, 0, TestName = "WhitelistedTitleWords_FilterOutAll")]
+        [TestCase(new String[] { ",Senior," }, 2, TestName = "WhitelistedTitleWords_PuncutationInsensitivity")]
         public void WhitelistedTitleWords(String[] whitelistedTitleWords, int remainingJobsCount)
         {
             //arrange
@@ -65,6 +68,8 @@ namespace CraigslistJobApplierTests
         [TestCase(new String[] { ".NET", "designer" }, 2, TestName = "WhitelistedDescriptionWords_Two")]
         [TestCase(new String[] { ".nEt" }, 1, TestName = "WhitelistedDescriptionWords_CaseInsensitivity")]
         [TestCase(new String[] { "Billion" }, 0, TestName = "WhitelistedDescriptionWords_FilterOutAll")]
+        [TestCase(new String[] { "C#..." }, 2, TestName = "WhitelistedDescriptionWords_PuncutationInsensitivity")]
+
         public void WhitelistedDescriptionWords(String[] whitelistedDescriptionWords, int remainingJobsCount)
         {
             //arrange
